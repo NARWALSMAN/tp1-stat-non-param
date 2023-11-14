@@ -1,0 +1,111 @@
+---
+title: "TP1_stat"
+output: word_document
+date: "2023-09-06"
+---
+
+Tests non paramétriques (basés sur les rangs)
+
+Ex1 : Soit X = (X1,X2,...,Xn) un ech iid issu d'une loi mère continue. 
+Soit R le vecteur des rangs
+
+1) Quelle  est la loi de R1 ?
+
+P(R1=4)=1/5
+P(R1=3 et R2=2)=1/20
+P(R=(5,4,3,2,1))=1/5!=1/120
+
+2) Quelle est la loi du couple (Ri,Rj) i et j fixés mais différents ?
+Exposez la table des probas dans le cas n=5.
+
+Equiprobable P(Ri=i et Rj=j)=1/20=1/(n(n-1))
+
+
+3) Rappelez E(Ri), V(Ri), Cov(Ri,Rj)
+```{r}
+$$
+  E(Ri) = \frac{n+1}{12} 
+$$
+```
+
+E(Ri) = (n+1)/2
+V(Ri) = (n²-1)/12
+cov(Ri,Rj) = -((n+1)/12))
+cor = 1/(n-1)
+
+4) Simulation :
+Générez 1000 réalisations des rangs R dans le cas n=5 -> estimations empiriques de E(R1), V(R1), Cov(R1,R2)
+
+
+
+```{r}
+rep<-1000
+n<-5
+
+RES<-matrix(NA,rep,n)
+
+
+ntirage<-1000
+
+
+for(k in 1:rep){
+  RES[k,]<-sample(n)
+  }
+apply(RES,2,mean)
+var(RES)
+```
+Ex2 : l'ech X est en fait constitué de 2 groupes 
+
+{X1, ... , Xn1, Xn1 + 1, ......, Xn}
+       n1                   n2
+       
+n1+n2 = n
+n1 = 6, n2 = 8
+W1 = somme des rangs du 1er grp
+W2 = somme des rangs du 2e grp
+
+(R1,.....,Rn1,Rn1 + 1,............,Rn2)
+        W1                   W2
+        
+W = A * R
+
+```{r}
+rep<-1000
+n<-5
+Sigma<-matrix(NA,rep,n)
+
+for(i in 1:n){
+  for(j in 1:n){
+    if(i==j){
+      sigma[i,j]<-(n-1)
+    }
+    else{sigma[i,j]<-(-1)}
+  }
+}
+
+sigma[i,j]
+```
+```{r}
+n1<-6
+n2<-8
+
+A1<-c(rep(1,n1),rep(0,n2))
+A2<-c(rep(0,n1),rep(1,n2))
+
+A<-rbind(A1,A2)
+sigma<-matrix(-1,n,n)
+
+diag(sigma)<-rep(n-1,n)
+sigma
+
+A %*% sigma %*% t(A)
+```
+
+```{r}
+A%*%sigma%*%t(A)
+```
+Ex3 : Simulation de la loi de W1 
+Générer 1000 simulations de W
+Tracer le barplot de la loi empirique de W1
+Superposer la courbe (curve) de la loi normale N(E(W1),sqrt((n1n2(N+1))/12))
+On fixe un des 2 echantillons
